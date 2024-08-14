@@ -1,9 +1,13 @@
 import logo from "./logo.svg";
 import "./App.css"; // http://localhost:9000/todos - myawesomeapi.com/api/todos
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(() => {
+    if (localStorage.getItem("todos"))
+      return JSON.parse(localStorage.getItem("todos"));
+    return [];
+  });
   const [text, setText] = useState("");
 
   const addTodo = () => {
@@ -11,6 +15,10 @@ function App() {
     setTodos([...todos, todo]);
     setText("");
   };
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const deleteTodo = (id) => {
     setTodos(todos.filter((t) => t.id !== id));
